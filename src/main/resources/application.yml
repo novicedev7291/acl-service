@@ -1,0 +1,23 @@
+contextPath: /acl
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/acls?useUnicode=yes&characterEncoding=UTF-8}
+    driver-class-name: ${DB_DRIVER_CLASS:com.mysql.jdbc.Driver}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+server:
+  port: ${SERVER_PORT:8002}
+flyway:
+  locations: classpath:/db/migration
+logging:
+  level:
+    org:
+      springframework: INFO
+---
+spring:
+  profiles: dev
+---
+spring:
+  profiles: test
+flyway:
+  locations: classpath:/db/migration,classpath:/h2/migration
