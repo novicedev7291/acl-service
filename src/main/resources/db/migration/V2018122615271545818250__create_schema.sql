@@ -19,6 +19,67 @@ CREATE TABLE `oauth_client_details` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------
+-- Table structure for table `oauth_client_token`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `oauth_client_token`;
+CREATE TABLE `oauth_client_token` (
+  `token_id` varchar(255) NOT NULL,
+  `token` BLOB NOT NULL,
+  `authentication_id` varchar(255) DEFAULT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
+  `client_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`token_id`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table structure for table `oauth_access_token`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `oauth_access_token`;
+CREATE TABLE `oauth_access_token` (
+  `token_id` varchar(255) NOT NULL,
+  `token` BLOB NOT NULL,
+  `authentication_id` varchar(255) DEFAULT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
+  `client_id` varchar(255) DEFAULT NULL,
+  `authentication` BLOB DEFAULT NULL,
+  `refresh_token` BLOB DEFAULT NULL,
+  PRIMARY KEY (`token_id`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table structure for table `oauth_refresh_token`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `oauth_refresh_token`;
+CREATE TABLE `oauth_refresh_token` (
+  `token_id` varchar(255) NOT NULL,
+  `token` BLOB NOT NULL,
+  `authentication` BLOB DEFAULT NULL,
+  PRIMARY KEY (`token_id`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table structure for table `oauth_code`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `oauth_code`;
+CREATE TABLE `oauth_code` (
+  `code` varchar(255) DEFAULT NULL,
+  `authentication` BLOB DEFAULT NULL
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table structure for table `oauth_approvals`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `oauth_approvals`;
+CREATE TABLE `oauth_approvals` (
+  `expiresAt` DATETIME DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `lastModifiedAt` DATETIME DEFAULT NULL,
+  `userId` varchar(255) DEFAULT NULL,
+  `clientId` varchar(255) DEFAULT NULL,
+  `scope` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
 -- Table `companies`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `companies`;
@@ -28,8 +89,8 @@ CREATE TABLE IF NOT EXISTS `companies` (
   `code` VARCHAR(20) NOT NULL,
   `description` VARCHAR(250) NULL,
   `active` TINYINT NULL DEFAULT 0,
-  `customize_info` VARCHAR(2000) NOT NULL,
-  `security_info` VARCHAR(2000) NOT NULL,
+  `customize_info` VARCHAR(2000) DEFAULT NULL,
+  `security_info` VARCHAR(2000) DEFAULT NULL,
   `created_on` DATETIME NULL DEFAULT NULL,
   `created_by` VARCHAR(100) NULL DEFAULT NULL,
   `updated_on` DATETIME NULL DEFAULT NULL,
@@ -48,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` VARCHAR(200) NOT NULL,
   `user_name` VARCHAR(100) NULL,
   `email` VARCHAR(200) NOT NULL,
-  `phone` VARCHAR(50) NULL,
+  `phone` VARCHAR(50) NOT NULL,
   `country_code` VARCHAR(5) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `change_password` TINYINT NULL DEFAULT 0,
@@ -163,18 +224,18 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `updated_on` DATETIME NULL DEFAULT NULL,
   `updated_by` VARCHAR(100) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `name_UNIQUE` (`name`, ASC),
-  INDEX `fk_roles_id_idx` (`role_id` ASC),
-  INDEX `fk_resources_id_idx` (`resource_id` ASC),
-  INDEX `fk_operations_id_idx` (`operation_id` ASC),
-  CONSTRAINT `fk_roles_id`
+  UNIQUE INDEX `name_perm_UNIQUE` (`name` ASC),
+  INDEX `fk_roles_perm_id_idx` (`role_id`),
+  INDEX `fk_resources_id_idx` (`resource_id`),
+  INDEX `fk_operations_id_idx` (`operation_id`),
+  CONSTRAINT `fk_roles_perm_id`
     FOREIGN KEY (`role_id`)
     REFERENCES `roles` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_resources_id`
     FOREIGN KEY (`resource_id`)
-    REFERENCES `resource` (`id`)
+    REFERENCES `resources` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_operations_id`
