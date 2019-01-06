@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -12,7 +13,7 @@ import java.time.Instant;
 @Table(name = "users")
 public class Users{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Integer id;
     @Column(name = "created_by")
@@ -41,4 +42,7 @@ public class Users{
     private boolean changePassword;
     @Column(name = "company_id")
     String companyId;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<Roles> roles;
 }

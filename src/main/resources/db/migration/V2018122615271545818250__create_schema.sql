@@ -157,8 +157,6 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
   `updated_by` VARCHAR(100) NULL DEFAULT NULL,
   `updated_on` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_roles_id_idx` (`role_id` ASC),
-  INDEX `fk_users_id_idx` (`user_id` ASC),
   CONSTRAINT `fk_roles_id`
     FOREIGN KEY (`role_id`)
     REFERENCES `roles` (`id`)
@@ -225,9 +223,6 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `updated_by` VARCHAR(100) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_perm_UNIQUE` (`name` ASC),
-  INDEX `fk_roles_perm_id_idx` (`role_id`),
-  INDEX `fk_resources_id_idx` (`resource_id`),
-  INDEX `fk_operations_id_idx` (`operation_id`),
   CONSTRAINT `fk_roles_perm_id`
     FOREIGN KEY (`role_id`)
     REFERENCES `roles` (`id`)

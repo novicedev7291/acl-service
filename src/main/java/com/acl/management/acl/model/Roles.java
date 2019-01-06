@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -12,7 +13,7 @@ import java.time.Instant;
 @Table(name = "roles")
 public class Roles{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Integer id;
     @Column(name = "created_by")
@@ -29,4 +30,6 @@ public class Roles{
     private boolean isDeletable;
     @Column(name = "company_id")
     String companyId;
+    @ManyToMany(mappedBy = "roleId", fetch = FetchType.EAGER)
+    private Set<Permissions> permissions;
 }
