@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,5 +32,5 @@ public class Roles{
     @Column(name = "company_id")
     String companyId;
     @ManyToMany(mappedBy = "roleId", fetch = FetchType.EAGER)
-    private Set<Permissions> permissions;
+    private Set<Permissions> permissions = new HashSet<>();
 }

@@ -41,19 +41,6 @@ public class CompanyControllerIT {
     private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mvc;
-    @Autowired
-    private WebApplicationContext context;
-    @Autowired
-    private CompanyController companyController;
-
-    @Before
-    public void setUp(){
-        /*this.mvc = MockMvcBuilders
-                    .webAppContextSetup(context)
-                    .apply(springSecurity())
-                    .build();*/
-        //this.mvc = MockMvcBuilders.standaloneSetup(this.companyController).build();
-    }
 
     @Test
     public void should_create_new_company() throws Exception{
@@ -65,6 +52,17 @@ public class CompanyControllerIT {
                         .content(mapper.writeValueAsBytes(TestDataMaker.createCompanyData())))
                 .andExpect(status().isCreated());
 
+    }
+
+    @Test
+    public void should_fail_with_403_error() throws Exception{
+        this.mvc
+                .perform(post(TestDataMaker.COMPANIES_ENDPOINT)
+                        .header(TestDataMaker.AUTHORIZATION, "Bearer "+obtainAccessToken("test_admin", "P@ssw111rd"))
+                        .header(TestDataMaker.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .header(TestDataMaker.X_COMPANY, TestDataMaker.COMPANY_ID)
+                        .content(mapper.writeValueAsBytes(TestDataMaker.createCompanyData())))
+                .andExpect(status().isForbidden());
     }
 
     private String obtainAccessToken(String username, String password) throws Exception{
