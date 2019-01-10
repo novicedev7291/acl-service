@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,6 +31,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -63,6 +65,19 @@ public class CompanyControllerIT {
                         .header(TestDataMaker.X_COMPANY, TestDataMaker.COMPANY_ID)
                         .content(mapper.writeValueAsBytes(TestDataMaker.createCompanyData())))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void should_fail_with_403_error_with_message() throws Exception{
+        this.mvc
+                .perform(post(TestDataMaker.COMPANIES_ENDPOINT)
+                        .header(TestDataMaker.AUTHORIZATION, "Bearer "+obtainAccessToken("test_admin", "P@ssw111rd"))
+                        .header(TestDataMaker.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .header(TestDataMaker.X_COMPANY, TestDataMaker.COMPANY_ID)
+                        .content(mapper.writeValueAsBytes(TestDataMaker.createCompanyData())))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.toString()));
     }
 
     private String obtainAccessToken(String username, String password) throws Exception{
